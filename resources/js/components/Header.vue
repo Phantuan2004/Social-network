@@ -275,6 +275,8 @@
                                             uk-scrollspy="target: > li; cls: uk-animation-scale-up , uk-animation-slide-right-small; delay: 20 ;repeat: true"
                                         >
                                             <li
+                                                v-for="(item, index) in slider"
+                                                :key="index"
                                                 class="w-28"
                                                 uk-scrollspy-class="uk-animation-fade"
                                             >
@@ -282,73 +284,13 @@
                                                     class="p-3 px-4 rounded-lg bg-teal-100/60 text-teal-600 dark:text-white dark:bg-dark4"
                                                 >
                                                     <ion-icon
-                                                        name="book"
+                                                        :name="item.icon"
                                                         class="text-2xl drop-shadow-md"
                                                     ></ion-icon>
                                                     <div
                                                         class="mt-1.5 text-sm font-medium"
                                                     >
-                                                        Story
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="w-28">
-                                                <div
-                                                    class="p-3 px-4 rounded-lg bg-sky-100/60 text-sky-600 dark:text-white dark:bg-dark4"
-                                                >
-                                                    <ion-icon
-                                                        name="camera"
-                                                        class="text-2xl drop-shadow-md"
-                                                    ></ion-icon>
-                                                    <div
-                                                        class="mt-1.5 text-sm font-medium"
-                                                    >
-                                                        Post
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="w-28">
-                                                <div
-                                                    class="p-3 px-4 rounded-lg bg-purple-100/60 text-purple-600 dark:text-white dark:bg-dark4"
-                                                >
-                                                    <ion-icon
-                                                        name="videocam"
-                                                        class="text-2xl drop-shadow-md"
-                                                    ></ion-icon>
-                                                    <div
-                                                        class="mt-1.5 text-sm font-medium"
-                                                    >
-                                                        Reel
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="w-28">
-                                                <div
-                                                    class="p-3 px-4 rounded-lg bg-pink-100/60 text-pink-600 dark:text-white dark:bg-dark4"
-                                                >
-                                                    <ion-icon
-                                                        name="location"
-                                                        class="text-2xl drop-shadow-md"
-                                                    ></ion-icon>
-                                                    <div
-                                                        class="mt-1.5 text-sm font-medium"
-                                                    >
-                                                        location
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="w-28">
-                                                <div
-                                                    class="p-3 px-4 rounded-lg bg-sky-100/70 text-sky-600 dark:text-white dark:bg-dark4"
-                                                >
-                                                    <ion-icon
-                                                        name="happy"
-                                                        class="text-2xl drop-shadow-md"
-                                                    ></ion-icon>
-                                                    <div
-                                                        class="mt-1.5 text-sm font-medium"
-                                                    >
-                                                        Status
+                                                        {{ item.name }}
                                                     </div>
                                                 </div>
                                             </li>
@@ -1288,7 +1230,7 @@
 </template>
 
 <script setup>
-import features from "../data/itemHeader";
+import { features, slider } from "../data/itemHeader";
 </script>
 
 <style lang="css" scoped></style>

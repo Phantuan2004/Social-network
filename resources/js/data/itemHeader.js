@@ -1,4 +1,4 @@
-export default [
+export const features = [
     {
         name: "Groups",
         route: "timeline",
@@ -32,5 +32,32 @@ export default [
         route: "timeline",
         icon: "/images/icons/game.png",
         description: "Play game with friends have fun.",
+    },
+];
+
+export const slider = [
+    {
+        name: "Story",
+        icon: "book",
+    },
+
+    {
+        name: "Post",
+        icon: "camera",
+    },
+
+    {
+        name: "Reel",
+        icon: "videocam",
+    },
+
+    {
+        name: "Location",
+        icon: "location",
+    },
+
+    {
+        name: "Status",
+        icon: "happy",
     },
 ];
