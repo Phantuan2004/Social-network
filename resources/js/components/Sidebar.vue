@@ -11,104 +11,14 @@
                 <div class="pr-4 sidebar-scroll">
                     <nav id="side">
                         <ul>
-                            <li>
-                                <router-link :to="{ name: 'home' }">
+                            <li v-for="(item, index) in sidebar" :key="index">
+                                <router-link :to="item.route">
                                     <img
-                                        src="/public/images/icons/home.png"
-                                        alt="feeds"
+                                        :src="item.icon"
+                                        :alt="item.name"
                                         class="w-6"
                                     />
-                                    <span> Feed </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'messages' }">
-                                    <img
-                                        src="/public/images/icons/message.png"
-                                        alt="messages"
-                                        class="w-5"
-                                    />
-                                    <span> messages </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'video' }">
-                                    <img
-                                        src="/public/images/icons/video.png"
-                                        alt="messages"
-                                        class="w-6"
-                                    />
-                                    <span> video </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'event' }">
-                                    <img
-                                        src="/public/images/icons/event.png"
-                                        alt="messages"
-                                        class="w-6"
-                                    />
-                                    <span> event </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'pages' }">
-                                    <img
-                                        src="/public/images/icons/page.png"
-                                        alt="pages"
-                                        class="w-6"
-                                    />
-                                    <span> Pages </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'groups' }">
-                                    <img
-                                        src="/public/images/icons/group.png"
-                                        alt="groups"
-                                        class="w-6"
-                                    />
-                                    <span> Groups </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'market' }">
-                                    <img
-                                        src="/public/images/icons/market.png"
-                                        alt="market"
-                                        class="w-7 -ml-1"
-                                    />
-                                    <span> market </span>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{ name: 'blog' }">
-                                    <img
-                                        src="/public/images/icons/blog.png"
-                                        alt="blog"
-                                        class="w-6"
-                                    />
-                                    <span> blog </span>
-                                </router-link>
-                            </li>
-                            <li class="!hidden" id="show__more">
-                                <router-link :to="{ name: 'games' }">
-                                    <img
-                                        src="/public/images/icons/game.png"
-                                        alt="games"
-                                        class="w-6"
-                                    />
-                                    <span> games </span>
-                                </router-link>
-                            </li>
-                            <li class="!hidden" id="show__more">
-                                <router-link :to="{ name: 'funding' }">
-                                    <img
-                                        src="/public/images/icons/fund.png"
-                                        alt="messages"
-                                        class="w-6"
-                                    />
-                                    <span> Fundraiser </span>
+                                    <span> {{ item.name }} </span>
                                 </router-link>
                             </li>
                         </ul>
@@ -254,7 +164,7 @@
                                 </router-link>
                             </li>
                             <li class="uk-parent">
-                                <router-link :to="{ name: 'groups' }">
+                                <router-link>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
@@ -327,6 +237,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
+import { sidebar } from "../data/itemSideBar";
 const route = useRoute();
 </script>
 
