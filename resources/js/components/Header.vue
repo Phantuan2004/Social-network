@@ -1288,7 +1288,7 @@
 </template>
 
 <script setup>
-import features from "../data/featuresHeader";
+import features from "../data/itemHeader";
 </script>
 
 <style lang="css" scoped></style>
