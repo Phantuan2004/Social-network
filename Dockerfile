@@ -3,19 +3,19 @@ FROM php:8.2-fpm
 
 # Cài extension Laravel yêu cầu
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    curl \
+    git \
+    nano \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    curl \
-    git \
-    nodejs \
-    npm \
-    nano
+    && docker-php-ext-install pdo pdo_pgsql
 
 # Cài composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
