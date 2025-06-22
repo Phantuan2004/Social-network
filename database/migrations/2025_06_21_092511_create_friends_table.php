@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('friends', function (Blueprint $table) {
             $table->id();
             $table->foreignId('requester_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('addressee_id')->constrained('users')->onDelete('cascade');
-            $table->unique(['requester_id', 'addressee_id']);
+            $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade');
+            $table->unique(['requester_id', 'receiver_id']);
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamps();
         });
