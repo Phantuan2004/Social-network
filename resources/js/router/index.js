@@ -4,6 +4,11 @@ import Layout from "../layouts/Layout.vue";
 const routes = [
     {
         path: "/",
+        redirect: "/auth-login",
+    },
+
+    {
+        path: "/",
         component: Layout,
         children: [
             {
@@ -63,7 +68,7 @@ const routes = [
             },
 
             {
-                path: "blog_read",
+                path: "blog-read",
                 name: "blog_read",
                 component: () => import("../pages/BlogRead.vue"),
                 meta: { showChat: true },
@@ -91,7 +96,7 @@ const routes = [
             },
 
             {
-                path: "product_view",
+                path: "product-view",
                 name: "product_view",
                 component: () => import("../pages/ProductView.vue"),
                 meta: { showChat: true },
@@ -112,21 +117,21 @@ const routes = [
             },
 
             {
-                path: "timeline_event",
+                path: "timeline-event",
                 name: "timeline_event",
                 component: () => import("../pages/TimelineEvent.vue"),
                 meta: { showChat: true },
             },
 
             {
-                path: "timeline_funding",
+                path: "timeline-funding",
                 name: "timeline_funding",
                 component: () => import("../pages/TimelineFunding.vue"),
                 meta: { showChat: true },
             },
 
             {
-                path: "timeline_page",
+                path: "timeline-page",
                 name: "timeline_page",
                 component: () => import("../pages/TimelinePage.vue"),
                 meta: { showChat: true },
@@ -147,7 +152,7 @@ const routes = [
             },
 
             {
-                path: "video_watch",
+                path: "video-watch",
                 name: "video_watch",
                 component: () => import("../pages/VideoWatch.vue"),
                 meta: { showChat: true },
@@ -156,14 +161,14 @@ const routes = [
     },
 
     {
-        path: "/form_login",
+        path: "/auth-login",
         name: "form_login",
         component: () => import("../pages/FormLogin.vue"),
         meta: { showChat: false },
     },
 
     {
-        path: "/form_register",
+        path: "/auth-register",
         name: "form_register",
         component: () => import("../pages/FormRegister.vue"),
         meta: { showChat: false },
