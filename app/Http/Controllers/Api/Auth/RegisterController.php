@@ -18,8 +18,9 @@ class RegisterController extends Controller
         $data['code'] = 'U-' . Str::random(10);
 
         // Ghép firstname và lastname
-        $data['fullname'] = $data['firstname'] . ' ' . $data['lastname'];
-        unset($data['firstname']);
+        $data['name'] = $data['firstname'];
+        $data['fullname'] = $data['lastname'] . ' ' . $data['firstname'];
+        unset($data['lastname']);
 
         // Kiểm tra email
         if (User::where('email', $request->email)->exists()) {

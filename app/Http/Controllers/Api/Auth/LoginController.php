@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,13 +21,15 @@ class LoginController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = User::where('email', $credentials['email'])->first();
+
+        $token = $user->createToken('token', ['*'], now()->addMinutes(60));
 
         return response()->json([
             'status' => 'success',
             'message' => 'Đăng nhập thành công',
+            'token' => $token->plainTextToken,
             'user' => $user,
-            'token' => $user->createToken('token')->plainTextToken
         ], 200);
     }
 }
