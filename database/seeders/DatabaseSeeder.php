@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->createMany([
             [
+                'code' => 'ABC123',
                 'name' => 'User',
                 'email' => 'test@gmail.com',
                 'password' => bcrypt('1111'),
@@ -30,6 +31,7 @@ class DatabaseSeeder extends Seeder
                 'role' => 'user',
             ],
             [
+                'code' => 'ABC000',
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
                 'password' => bcrypt('1111'),
