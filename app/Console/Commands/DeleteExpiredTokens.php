@@ -12,7 +12,7 @@ class DeleteExpiredTokens extends Command
      *
      * @var string
      */
-    protected $signature = 'tokens: prune-expired';
+    protected $signature = 'tokens:prune-expired';
 
     /**
      * The console command description.
