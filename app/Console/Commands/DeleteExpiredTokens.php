@@ -26,8 +26,8 @@ class DeleteExpiredTokens extends Command
      */
     public function handle()
     {
-        $threshold = now()->subWeek();
+        $threshold = now()->subDay();
         $count = PersonalAccessToken::where('expires_at', '<', $threshold)->delete();
-        $this->info("Deleted {$count} expired personal access tokens older than 1 week.");
+        $this->info("Deleted {$count} expired personal access tokens older than 1 day.");
     }
 }
