@@ -1,7 +1,7 @@
 export const sidebar = [
     {
         name: "Feed",
-        route: "/",
+        route: "home",
         icon: "images/icons/home.png",
     },
 
