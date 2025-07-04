@@ -14,7 +14,7 @@ class LoginController extends Controller
     {
         $credentials = $request->validated();
 
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials, $request->remember)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'email hoặc mật khẩu không đúng'
@@ -23,12 +23,13 @@ class LoginController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        $token = $user->createToken('token', ['*'], now()->addMinutes(60));
+        $token = $user->createToken('token', ['*'], now()->addMinutes(1));
 
         return response()->json([
             'status' => 'success',
             'message' => 'Đăng nhập thành công',
             'token' => $token->plainTextToken,
+            'expries_at' => $token->accessToken->expires_at,
             'user' => $user,
         ], 200);
     }

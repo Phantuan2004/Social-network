@@ -47,8 +47,7 @@
 
                 <!-- form -->
                 <form
-                    method="#"
-                    action="#"
+                    @submit.prevent="handleLogin"
                     class="space-y-7 text-sm text-black font-medium dark:text-white"
                     uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 100 ;repeat: true"
                 >
@@ -57,9 +56,8 @@
                         <label for="email" class="">Email address</label>
                         <div class="mt-2.5">
                             <input
-                                id="email"
-                                name="email"
-                                type="email"
+                                v-model="email"
+                                type="text"
                                 autofocus=""
                                 placeholder="Email"
                                 required=""
@@ -72,8 +70,7 @@
                         <label for="email" class="">Password</label>
                         <div class="mt-2.5">
                             <input
-                                id="password"
-                                name="password"
+                                v-model="password"
                                 type="password"
                                 placeholder="***"
                                 class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
@@ -84,9 +81,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
                             <input
-                                id="rememberme"
-                                name="rememberme"
+                                v-model="rememberMe"
                                 type="checkbox"
+                                required
                             />
                             <label for="rememberme" class="font-normal"
                                 >Remember me</label
@@ -245,6 +242,19 @@
 </template>
 
 <script setup>
+// API call
+import { ref } from "vue";
+import authURL from "@/routerApi/auth";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+
+const email = ref("");
+const password = ref("");
+const rememberMe = ref(false);
+
+const toast = useToast();
+const router = useRouter();
+
 // Dark mode toggle script
 if (
     localStorage.theme === "dark" ||
@@ -256,11 +266,34 @@ if (
     document.documentElement.classList.remove("dark");
 }
 
-localStorage.theme = "light";
+// localStorage.theme = "light";
 
-localStorage.theme = "dark";
+// localStorage.theme = "dark";
 
-localStorage.removeItem("theme");
+// localStorage.removeItem("theme");
+
+const handleLogin = async () => {
+    try {
+        if (!email.value || !password.value) {
+            toast.error("Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+        const res = await authURL.login(
+            email.value,
+            password.value,
+            rememberMe.value
+        );
+        if (res && res.token) {
+            toast.success("Đăng nhập thành công");
+            localStorage.setItem("token", res.token);
+            router.push("home");
+        } else {
+            toast.error("Đăng nhập thất bại");
+        }
+    } catch (error) {
+        toast.error("Tài khoản không hợp lệ");
+    }
+};
 </script>
 
 <style lang="scss" scoped></style>
