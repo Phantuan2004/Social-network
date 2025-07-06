@@ -285,7 +285,6 @@ const handleLogin = async () => {
         );
         if (res && res.token) {
             toast.success("Đăng nhập thành công");
-            localStorage.setItem("token", res.token);
             router.push("home");
         } else {
             toast.error("Đăng nhập thất bại");
