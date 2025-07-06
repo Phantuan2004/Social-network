@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,10 +31,10 @@ class LoginController extends Controller
         }
 
         // Xóa các token cũ
-        $user->tokens()->delete();
+        // $user->tokens()->delete();
 
         // Tạo token mới
-        $token = $user->createToken('auth-token', ['*'], now()->addHour())->plainTextToken;
+        $token = $user->createToken('auth-token', ['*'], now()->addDay())->plainTextToken;
 
         return response()->json([
             'status' => 'success',
@@ -41,7 +42,29 @@ class LoginController extends Controller
             'user' => $user,
             'token' => $token,
             'token_type' => 'Bearer',
-            'expires_at' => now()->addHour()->toISOString(),
+            'expires_at' => now()->addDay()->toISOString(),
         ], 200);
+    }
+
+    // Phương thức check token
+    public function checkToken(Request $request)
+    {
+        if (auth('api')->check()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Token hợp lệ',
+                'user' => auth('api')->user(),
+            ], 200);
+        }
+    }
+
+    // Phương thức xử lý khi không xác thực
+    // (được gọi khi token không hợp lệ hoặc đã hết hạn)
+    public function unauthenticated(Request $request)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Token không hợp lệ hoặc đã hết hạn',
+        ], 401);
     }
 }
