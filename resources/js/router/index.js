@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Layout from "../layouts/Layout.vue";
+import auth from "../routerApi/auth.js";
 
 const routes = [
     {
@@ -250,13 +251,33 @@ const router = createRouter({
 
 let isNavigating = false;
 
-// Loading guard
-router.beforeEach((to, from, next) => {
-    if (to.meta.showLoading) {
-        isNavigating = true;
-        window.dispatchEvent(new CustomEvent("route-loading-start"));
+router.beforeEach(async (to, from, next) => {
+    const isAuthenticated = auth.isAuthenticated();
+
+    // Kiểm tra token hợp lệ nếu user đã authenticated
+    if (isAuthenticated && to.meta.requiresAuth) {
+        try {
+            await auth.checkToken();
+        } catch (error) {
+            // Token không hợp lệ, clear và redirect
+            auth.clearToken();
+            next({ name: "form_login" });
+            return;
+        }
     }
-    next();
+
+    if (to.meta.requiresAuth && !isAuthenticated) {
+        next({ name: "form_login" });
+    } else if (to.meta.requiresGuest && isAuthenticated) {
+        next({ name: "home" });
+    } else if (to.path === "/" && isAuthenticated) {
+        next({ name: "home" });
+    } else {
+        if (to.meta.showLoading) {
+            window.dispatchEvent(new CustomEvent("route-loading-start"));
+        }
+        next();
+    }
 });
 
 router.afterEach((to, from) => {
@@ -267,5 +288,4 @@ router.afterEach((to, from) => {
         }, 500);
     }
 });
-
 export default router;
