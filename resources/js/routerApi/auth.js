@@ -59,8 +59,13 @@ export default {
         }
     },
 
-    async logout(token) {
+    async logout() {
         try {
+            const token = localStorage.getItem(TOKEN_KEY);
+            if (!token) {
+                throw new Error("No token found in localStorage");
+            }
+
             const response = await axios.post(
                 `${API_URL}/logout`,
                 {},
@@ -75,6 +80,8 @@ export default {
             localStorage.removeItem(EXPIRES_KEY);
             return response.data;
         } catch (error) {
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(EXPIRES_KEY);
             throw error;
         }
     },
