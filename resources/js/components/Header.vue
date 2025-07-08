@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Loading v-if="isLogoutLoading" />
         <header
             class="z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800"
         >
@@ -1171,7 +1172,13 @@
                                     <hr
                                         class="-mx-2 my-2 dark:border-gray-600/60"
                                     />
-                                    <router-link :to="{ name: 'form_login' }">
+                                    <!-- <router-link :to="{ name: 'form_login' }"> -->
+                                    <button
+                                        @click="logout"
+                                        type="submit"
+                                        class="w-full"
+                                        :disabled="isLogoutLoading"
+                                    >
                                         <div
                                             class="flex items-center gap-2.5 hover:bg-secondery p-2 px-2.5 rounded-md dark:hover:bg-white/10"
                                         >
@@ -1191,7 +1198,8 @@
                                             </svg>
                                             Log Out
                                         </div>
-                                    </router-link>
+                                        <!-- </router-link> -->
+                                    </button>
                                 </nav>
                             </div>
 
@@ -1230,7 +1238,29 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { features, slider } from "../data/itemHeader";
+import { useRouter } from "vue-router";
+import authURL from "@/routerApi/auth.js";
+import Loading from "./Loading.vue";
+
+const router = useRouter();
+const isLogoutLoading = ref(false);
+
+// Xử lý logout
+const logout = async () => {
+    isLogoutLoading.value = true;
+    try {
+        await authURL.logout();
+        console.log("Logout successful");
+    } catch (error) {
+        isLogoutLoading.value = false;
+        console.error("Logout failed:", error);
+    } finally {
+        authURL.clearToken();
+        router.push({ name: "form_login" });
+    }
+};
 </script>
 
 <style lang="css" scoped></style>
