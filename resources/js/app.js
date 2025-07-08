@@ -7,10 +7,9 @@ import "vue-toastification/dist/index.css";
 import "/resources/js/libs/uikit.min.js";
 import "/resources/js/libs/script.js";
 
-// UIkit
-
 const app = createApp(App);
 
+// Time out for toast notifications
 const options = {
     timeout: 2000,
 };
