@@ -34,7 +34,7 @@ class LoginController extends Controller
         // $user->tokens()->delete();
 
         // Tạo token mới
-        $token = $user->createToken('auth-token', ['*'], now()->addDay())->plainTextToken;
+        $token = $user->createToken('auth-token', ['*'], now()->addDays(7))->plainTextToken;
 
         return response()->json([
             'status' => 'success',
@@ -42,7 +42,7 @@ class LoginController extends Controller
             'user' => $user,
             'token' => $token,
             'token_type' => 'Bearer',
-            'expires_at' => now()->addDay()->toISOString(),
+            'expires_at' => now()->addDays(7)->toISOString(),
         ], 200);
     }
 
