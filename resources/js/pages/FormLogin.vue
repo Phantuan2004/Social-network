@@ -58,6 +58,7 @@
                             <input
                                 v-model="email"
                                 type="text"
+                                id="email"
                                 autofocus=""
                                 placeholder="Email"
                                 required=""
@@ -67,11 +68,12 @@
                     </div>
                     <!-- password -->
                     <div>
-                        <label for="email" class="">Password</label>
+                        <label for="password" class="">Password</label>
                         <div class="mt-2.5">
                             <input
                                 v-model="password"
                                 type="password"
+                                id="password"
                                 placeholder="***"
                                 class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
                             />
@@ -83,6 +85,7 @@
                             <input
                                 v-model="rememberMe"
                                 type="checkbox"
+                                id="rememberme"
                                 required
                             />
                             <label for="rememberme" class="font-normal"
@@ -100,6 +103,8 @@
                         >
                             Sign in
                         </button>
+                        <!-- Hiển thị message -->
+                        <!-- <div id="message"></div> -->
                     </div>
 
                     <div class="text-center flex items-center gap-6">
@@ -247,10 +252,12 @@ import { ref } from "vue";
 import authURL from "@/routerApi/auth";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const email = ref("");
 const password = ref("");
 const rememberMe = ref(false);
+// const message = ref("");
 
 const toast = useToast();
 const router = useRouter();

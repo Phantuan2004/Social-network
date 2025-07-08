@@ -44,7 +44,7 @@ export default {
             try {
                 // Thời gian tải tối thiểu
                 const minLoadTime = new Promise((resolve) =>
-                    setTimeout(resolve, 1000)
+                    setTimeout(resolve, 100)
                 );
 
                 const initTasks = Promise.all([
