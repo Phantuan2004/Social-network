@@ -23,6 +23,20 @@ const routes = [
     },
 
     {
+        path: "/auth-forgot-password",
+        name: "form_forgot_password",
+        component: () => import("../pages/FormForgotPassword.vue"),
+        meta: { showChat: false, requiresGuest: true },
+    },
+
+    // {
+    //     path: "/auth-reset-password",
+    //     name: "form_reset_password",
+    //     component: () => import("../pages/FormResetPassword.vue"),
+    //     meta: { showChat: false, requiresGuest: true },
+    // },
+
+    {
         path: "/",
         component: Layout,
         children: [

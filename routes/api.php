@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\ResetPassword;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('auth')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->name('login');
     Route::get('login', [LoginController::class, 'unauthenticated'])->name('login.get'); // Handle unauthenticated request (check-token)
+
+    // Reset password
+    Route::post('forgot-password', [ResetPassword::class, 'forgotPassword'])->name('forgot-password');
+    Route::post('reset-password', [ResetPassword::class, 'resetPassword'])->name('reset-password');
+
     Route::post('register', [RegisterController::class, 'register'])->name('register');
     Route::middleware('auth:sanctum')->post('logout', [LogoutController::class, 'logout'])->name('logout');
     Route::middleware('auth:sanctum')->get('/check-token', [LoginController::class, 'checkToken'])->name('check-token');

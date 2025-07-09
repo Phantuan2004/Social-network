@@ -92,7 +92,12 @@
                                 >Remember me</label
                             >
                         </div>
-                        <a href="#" class="text-blue-700">Forgot password </a>
+                        <router-link
+                            :to="{ name: 'form_forgot_password' }"
+                            class="text-blue-700"
+                        >
+                            Forgot password?
+                        </router-link>
                     </div>
 
                     <!-- submit button -->

@@ -45,6 +45,30 @@ export default {
         }
     },
 
+    async forgotPassword(email) {
+        try {
+            const response = await axios.post(`${API_URL}/forgot-password`, {
+                email,
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async resetPassword(email, code, password) {
+        try {
+            const response = await axios.post(`${API_URL}/reset-password`, {
+                email,
+                code,
+                password,
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
     async register(firstname, lastname, email, password) {
         try {
             const response = await axios.post(`${API_URL}/register`, {
