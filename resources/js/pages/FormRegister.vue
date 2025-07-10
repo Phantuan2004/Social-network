@@ -47,6 +47,7 @@
 
                 <!-- form -->
                 <form
+                    @submit.prevent="handleRegister"
                     method="#"
                     action="#"
                     class="space-y-7 text-sm text-black font-medium dark:text-white"
@@ -58,12 +59,12 @@
                             <label for="email" class="">First name</label>
                             <div class="mt-2.5">
                                 <input
+                                    v-model="firstName"
                                     id="text"
                                     name="text"
                                     type="text"
                                     autofocus=""
                                     placeholder="First name"
-                                    required=""
                                     class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
                                 />
                             </div>
@@ -74,11 +75,11 @@
                             <label for="email" class="">Last name</label>
                             <div class="mt-2.5">
                                 <input
+                                    v-model="lastName"
                                     id="text"
                                     name="text"
                                     type="text"
                                     placeholder="Last name"
-                                    required=""
                                     class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
                                 />
                             </div>
@@ -89,11 +90,11 @@
                             <label for="email" class="">Email address</label>
                             <div class="mt-2.5">
                                 <input
+                                    v-model="email"
                                     id="email"
                                     name="email"
                                     type="email"
                                     placeholder="Email"
-                                    required=""
                                     class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
                                 />
                             </div>
@@ -104,6 +105,7 @@
                             <label for="email" class="">Password</label>
                             <div class="mt-2.5">
                                 <input
+                                    v-model="password"
                                     id="password"
                                     name="password"
                                     type="password"
@@ -118,8 +120,9 @@
                             <label for="email" class="">Confirm Password</label>
                             <div class="mt-2.5">
                                 <input
-                                    id="password"
-                                    name="password"
+                                    v-model="confirmPassword"
+                                    id="confirm-password"
+                                    name="confirm-password"
                                     type="password"
                                     placeholder="***"
                                     class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
@@ -133,6 +136,7 @@
                                 id="rememberme"
                             >
                                 <input
+                                    v-model="acceptTerms"
                                     type="checkbox"
                                     id="accept-terms"
                                     class="!rounded-md accent-red-800"
@@ -151,10 +155,14 @@
                         <!-- submit button -->
                         <div class="col-span-2">
                             <button
+                                :disabled="isLoading"
                                 type="submit"
-                                class="button bg-primary text-white w-full"
+                                class="button bg-primary text-white w-full disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Get Started
+                                <span v-if="isLoading"
+                                    >Creating account...</span
+                                >
+                                <span v-else>Get Started</span>
                             </button>
                         </div>
                     </div>
@@ -239,7 +247,7 @@
                                 >
                                     This phrase is more casual and playful. It
                                     suggests that you are keeping your friends
-                                    updated on what’s happening in your life.
+                                    updated on what's happening in your life.
                                 </p>
                             </div>
                         </div>
@@ -277,7 +285,7 @@
                                 >
                                     This phrase is more casual and playful. It
                                     suggests that you are keeping your friends
-                                    updated on what’s happening in your life.
+                                    updated on what's happening in your life.
                                 </p>
                             </div>
                         </div>
@@ -299,6 +307,21 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import authURL from "@/routerApi/auth";
+import { useToast } from "vue-toastification";
+import { useRouter } from "vue-router";
+
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const acceptTerms = ref(false);
+const toast = useToast();
+const router = useRouter();
+const isLoading = ref(false);
+
 // Dark model toggle script
 if (
     localStorage.theme === "dark" ||
@@ -315,6 +338,92 @@ localStorage.theme = "light";
 localStorage.theme = "dark";
 
 localStorage.removeItem("theme");
+
+const handleRegister = async () => {
+    try {
+        if (
+            !firstName.value ||
+            !lastName.value ||
+            !email.value ||
+            !password.value ||
+            !confirmPassword.value
+        ) {
+            toast.error("Vui lòng điền đầy đủ thông tin");
+            return;
+        }
+
+        if (password.value !== confirmPassword.value) {
+            toast.error("Mật khẩu xác nhận không khớp");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            toast.error("Email không hợp lệ");
+            return;
+        }
+
+        if (!acceptTerms.value) {
+            toast.error("Bạn cần đồng ý với các điều khoản");
+            return;
+        }
+
+        isLoading.value = true;
+
+        const response = await authURL.register({
+            first_name: firstName.value,
+            last_name: lastName.value,
+            email: email.value,
+            password: password.value,
+            password_confirmation: confirmPassword.value,
+            accept_terms: acceptTerms.value,
+        });
+
+        if (response && response.status === "success") {
+            // Success message
+            toast.success("Đăng ký thành công!");
+
+            // Redirect to login
+            router.push({ name: "form_login" });
+        } else {
+            toast.error(response.message || "Đăng ký thất bại");
+        }
+    } catch (error) {
+        console.log(`Error registering user: ${error}`);
+    } finally {
+        isLoading.value = false;
+    }
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped>
+/* Loading animation */
+.button:disabled {
+    position: relative;
+}
+
+.button:disabled::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
