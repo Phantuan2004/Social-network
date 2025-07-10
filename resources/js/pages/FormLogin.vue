@@ -57,11 +57,10 @@
                         <div class="mt-2.5">
                             <input
                                 v-model="email"
-                                type="text"
+                                type="email"
                                 id="email"
                                 autofocus=""
                                 placeholder="Email"
-                                required=""
                                 class="!w-full !rounded-lg !bg-transparent !shadow-sm !border-slate-200 dark:!border-slate-800 dark:!bg-white/5"
                             />
                         </div>
@@ -86,7 +85,7 @@
                                 v-model="rememberMe"
                                 type="checkbox"
                                 id="rememberme"
-                                required
+                                name="remember_me"
                             />
                             <label for="rememberme" class="font-normal"
                                 >Remember me</label
@@ -104,12 +103,12 @@
                     <div>
                         <button
                             type="submit"
-                            class="button bg-primary text-white w-full"
+                            :disabled="isLoading"
+                            class="button bg-primary text-white w-full disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Sign in
+                            <span v-if="isLoading">Signing in...</span>
+                            <span v-else>Sign in</span>
                         </button>
-                        <!-- Hiển thị message -->
-                        <!-- <div id="message"></div> -->
                     </div>
 
                     <div class="text-center flex items-center gap-6">
@@ -192,7 +191,7 @@
                                 >
                                     This phrase is more casual and playful. It
                                     suggests that you are keeping your friends
-                                    updated on what’s happening in your life.
+                                    updated on what's happening in your life.
                                 </p>
                             </div>
                         </div>
@@ -230,7 +229,7 @@
                                 >
                                     This phrase is more casual and playful. It
                                     suggests that you are keeping your friends
-                                    updated on what’s happening in your life.
+                                    updated on what's happening in your life.
                                 </p>
                             </div>
                         </div>
@@ -252,59 +251,142 @@
 </template>
 
 <script setup>
-// API call
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import authURL from "@/routerApi/auth";
 import { useToast } from "vue-toastification";
 import { useRouter } from "vue-router";
-import axios from "axios";
 
+// Reactive data
 const email = ref("");
 const password = ref("");
 const rememberMe = ref(false);
-// const message = ref("");
-
+const isLoading = ref(false);
 const toast = useToast();
 const router = useRouter();
 
 // Dark mode toggle script
-if (
-    localStorage.theme === "dark" ||
-    (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-) {
-    document.documentElement.classList.add("dark");
-} else {
-    document.documentElement.classList.remove("dark");
-}
+const initDarkMode = () => {
+    if (
+        localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.remove("dark");
+    }
+};
 
-// localStorage.theme = "light";
+// Check if user is already authenticated
+const checkExistingAuth = () => {
+    if (authURL.isAuthenticated()) {
+        toast.info("Bạn đã đăng nhập rồi");
+        router.push({ name: "home" });
+    }
+};
 
-// localStorage.theme = "dark";
-
-// localStorage.removeItem("theme");
-
+// Handle login
 const handleLogin = async () => {
+    if (isLoading.value) return;
+
     try {
+        // Validation
         if (!email.value || !password.value) {
             toast.error("Vui lòng nhập đầy đủ thông tin");
             return;
         }
-        const res = await authURL.login(
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            toast.error("Email không hợp lệ");
+            return;
+        }
+
+        isLoading.value = true;
+
+        // Call login API với rememberMe parameter
+        const response = await authURL.login(
             email.value,
             password.value,
             rememberMe.value
         );
-        if (res && res.token) {
-            toast.success("Đăng nhập thành công");
-            router.push("home");
+
+        if (response && response.status === "success") {
+            // Success message
+            toast.success("Đăng nhập thành công!");
+
+            // Redirect to home
+            router.push({ name: "home" });
         } else {
-            toast.error("Đăng nhập thất bại");
+            toast.error(response.message || "Đăng nhập thất bại");
         }
     } catch (error) {
-        toast.error("Tài khoản không hợp lệ");
+        console.error("Login error:", error);
+
+        // Handle different error types
+        if (error.response) {
+            const status = error.response.status;
+            const message = error.response.data?.message;
+
+            switch (status) {
+                case 401:
+                    toast.error("Email hoặc mật khẩu không chính xác");
+                    break;
+                case 422:
+                    toast.error("Dữ liệu không hợp lệ");
+                    break;
+                case 429:
+                    toast.error("Quá nhiều lần thử. Vui lòng thử lại sau");
+                    break;
+                default:
+                    toast.error(message || "Có lỗi xảy ra. Vui lòng thử lại");
+            }
+        } else if (error.request) {
+            toast.error("Không thể kết nối đến server");
+        } else {
+            toast.error("Có lỗi xảy ra. Vui lòng thử lại");
+        }
+    } finally {
+        isLoading.value = false;
     }
 };
+
+// Lifecycle hooks
+onMounted(() => {
+    initDarkMode();
+    checkExistingAuth();
+});
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped>
+/* Loading animation */
+.button:disabled {
+    position: relative;
+}
+
+.button:disabled::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>

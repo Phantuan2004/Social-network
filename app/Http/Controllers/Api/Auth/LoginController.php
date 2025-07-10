@@ -30,11 +30,16 @@ class LoginController extends Controller
             ], 403);
         }
 
-        // Xóa các token cũ
-        // $user->tokens()->delete();
+        $rememberMe = $request->remember_me;
 
-        // Tạo token mới
-        $token = $user->createToken('auth-token', ['*'], now()->addDays(7))->plainTextToken;
+        if ($rememberMe) {
+            $token = $user->createToken('auth-token', ['*'], now()->addDays(7))->plainTextToken;
+            $expiresAt = now()->addDays(7);
+        } else {
+            $token = $user->createToken('auth-token', ['*'], now()->addHours(5))->plainTextToken;
+            $expiresAt = now()->addHours(5);
+        }
+
 
         return response()->json([
             'status' => 'success',
@@ -42,7 +47,8 @@ class LoginController extends Controller
             'user' => $user,
             'token' => $token,
             'token_type' => 'Bearer',
-            'expires_at' => now()->addDays(7)->toISOString(),
+            'expires_at' => $expiresAt->toISOString(),
+            'remember_me' => $request->remember_me ?? false,
         ], 200);
     }
 
