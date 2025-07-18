@@ -50,6 +50,7 @@
                     @submit.prevent="handleLogin"
                     class="space-y-7 text-sm text-black font-medium dark:text-white"
                     uk-scrollspy="target: > *; cls: uk-animation-scale-up; delay: 100 ;repeat: true"
+                   
                 >
                     <!-- email -->
                     <div>
